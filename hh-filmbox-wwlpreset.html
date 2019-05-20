@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="hh-filmbox-wwlpreset">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `hh-filmbox-wwlpreset`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class HhFilmboxWwlpreset extends Polymer.Element {
+      static get is() { return 'hh-filmbox-wwlpreset'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'hh-filmbox-wwlpreset'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(HhFilmboxWwlpreset.is, HhFilmboxWwlpreset);
+  </script>
+</dom-module>
