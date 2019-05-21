@@ -1,36 +1,416 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../vaadin-icons/vaadin-icons.html">
+<script src="../ag-grid-enterprise/dist/ag-grid-enterprise.js"></script>
+<link rel="import" href="../ag-grid-polymer/ag-grid-polymer.html">
 
+<script src="licenseKey.js"></script>
 <dom-module id="hh-filmbox-wwlpreset">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+    <template>
+        <link rel="stylesheet" href="../bower_components/ag-grid/dist/styles/ag-grid.css">
+        <link rel="stylesheet" href="../bower_components/ag-grid/dist/styles/ag-theme-balham-dark.css">
+        <style>
+            :host {
+                display: block;
+                /*height: 100%;*/
+                /*width: 100%;*/
+                height: 300px;
+                width: 300px;
+            }
 
-  <script>
-    /**
-     * `hh-filmbox-wwlpreset`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class HhFilmboxWwlpreset extends Polymer.Element {
-      static get is() { return 'hh-filmbox-wwlpreset'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'hh-filmbox-wwlpreset'
-          }
-        };
-      }
-    }
+            ag-grid-polymer {
+                width: 100%;
+                height: 100%;
+                color: #aaaaaa !important;
+                font-size: 12px !important;
+                font-weight: normal !important;
+                background-color: #2d333f !important;
+                font-family: "NotoSansCJKLight" !important;
+            }
 
-    window.customElements.define(HhFilmboxWwlpreset.is, HhFilmboxWwlpreset);
-  </script>
+            .ag-header {
+            background-color: #2d333f !important;
+            color: #cccccc !important;
+            border-bottom: 3px solid #0087cb !important;
+            font-weight: bold !important;
+            font-size: 12px !important;
+            }
+
+            .ag-row {
+            border-bottom: 1px solid #414a59 !important;
+            }
+
+            .ag-row-even {
+            background-color: rgba(76, 86, 103, 0.2) !important;
+            }
+
+            .ag-row-odd {
+            background-color: #2d333f !important;
+            }
+
+            .ag-row-selected {
+            background-color: #596072 !important;
+            color: #fff !important;
+            }
+
+            .ag-cell-focus {
+            border: 1px solid darkgrey !important;
+            }
+
+            paper-input {
+                --paper-input-container-focus-color: #0087cb;
+                --paper-input-container-label-color: #aaaaaa;
+                --paper-input-container-input-text-align: center;
+                --paper-input-container-input-color: #aaaaaa;
+
+                /*width: 150px;*/
+                color: #aaaaaa;
+                background: #2d333f;
+            }
+
+            paper-item {
+                --paper-item-min-height: 30px;
+                --paper-item-focused-color: #0087cb;
+                color: #aaaaaa;
+                font-size: 16px;
+            }
+
+            .container {
+                height: 100%;
+                width: 100%;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            .class-WWLDialog {
+                background: #2d333f;
+                width: 450px;
+                height: 420px;
+            }
+
+            .class-WWL-list {
+                height: 180px;
+                width: 96%;
+                margin: 10px 10px 15px 10px;
+            }
+
+            .menuItems-title {
+                background-color: #252934;
+                height: 50px;
+                width: 100%;
+                color: #fff;
+                border-bottom: 1px solid #4c5667;
+            }
+
+            #xBtnWWL {
+                width: 50px;
+                height: 50px;
+                padding: 15px;
+                float: right;
+                color: #aaaaaa;
+                border: 0;
+            }
+
+            .text-font {
+                width: 55px;
+                padding: 0 7px;
+                font-size: 10pt;
+                color: #aaaaaa;
+                margin: 5px 5px 0 5px;
+            }
+
+            .class-WWL-context {
+                width: 100%;
+                height: 28%;
+            }
+
+            .class-list-content {
+                height: 100%;
+                width: 100%;
+            }
+
+            .wrap {
+                display: flex;
+                flex-direction: row;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                height: 52px;
+            }
+
+            .classWWLBtn {
+                text-align: center;
+                margin: 15px 0px 10px 0px;
+                height: 40px;
+                flex: 1;
+            }
+
+            #okBtnWWL{
+                background: #0087cb;
+            }
+
+            #closeBtnWWL, #clearBtnWWL{
+                background: #4c5667;
+            }
+
+            .btn {
+                width: 122px;
+                height: 30px;
+                border: 0;
+                font-size: 12pt;
+                color: #ffffff;
+                cursor: pointer;
+                border-radius: 2px;
+            }
+
+            .test {
+                height: 100px;
+                width: 100px;
+                background: gold;
+            }
+        </style>
+        <div class="container">
+            <button class="test" id="testBtn">open</button>
+            <paper-dialog id="WWLDialog" class="class-WWLDialog" horizontal-align="left">
+                <div class="container">
+                    <div class="menuItems-title">
+                        <p style="margin: 0; padding: 15px; float: left;">WWL Preset</p>
+                        <paper-icon-button id="xBtnWWL" on-click="" icon="vaadin:close-big"></paper-icon-button>
+                    </div>
+                    <div class="class-WWL-context">
+                        <div class="wrap">
+                            <input id="windowDialogIdx" style="display: none">
+                            <div class="text-font">Window Level</div>
+                            <paper-input type="number" id="windowDialogWidth" class="class-windowDialog-input"
+                                         style="width: 100px;" no-label-float></paper-input>
+                            <div class="text-font" style="margin-left: 50px">Window Width</div>
+                            <paper-input type="number" id="windowDialogLevel" class="class-windowDialog-input"
+                                         style="width: 100px; color: #aaaaaa;" no-label-float></paper-input>
+                        </div>
+                        <div class="wrap">
+                            <div class="text-font">Title</div>
+                            <paper-input type="String" id="windowDialogTitle" class="class-windowDialog-input"
+                                         style="width: 100px;" no-label-float></paper-input>
+                            <!--<div class="text-font" style="margin-left: 50px">Target</div>-->
+                            <!--<paper-input type="number" id="windowDialogLevel" class="class-windowDialog-input"-->
+                            <!--style="width: 100px; color: #aaaaaa;" no-label-float></paper-input>-->
+                        </div>
+                    </div>
+                    <div class="class-WWL-list">
+                        <div class="class-list-content">
+                            <ag-grid-polymer
+                                    class="ag-theme-balham-dark"
+                                    rowData="{{rowData}}"
+                                    columnDefs="{{columnDefs}}"
+                                    gridOptions="{{gridOptions}}"
+                            ></ag-grid-polymer>
+                        </div>
+                    </div>
+                    <div class="classWWLBtn">
+                        <button id="okBtnWWL" class="btn" style="width: 80px">Save</button>
+                        &nbsp;
+                        <button id="clearBtnWWL" class="btn" style="width: 80px">Clear</button>
+                        &nbsp;
+                        <button id="closeBtnWWL" class="btn" style="width: 80px">Close</button>
+                    </div>
+                </div>
+            </paper-dialog>
+        </div>
+    </template>
+    <script>
+        (function () {
+            let _this;
+            let testPreset = [
+                {idx: "0", title: "test111", level: "1111", width: "1111"},
+                {idx: "1", title: "test222", level: "2222", width: "2222"},
+                {idx: "2", title: "test333", level: "3333", width: "3333"},
+                {idx: "3", title: "test444", level: "4444", width: "4444"},
+                {idx: "4", title: "test555", level: "5555", width: "5555"}
+            ]
+
+            class HhFilmboxWwlpreset extends Polymer.Element {
+                static get is() {
+                    return 'hh-filmbox-wwlpreset';
+                }
+
+                static get properties() {
+                    return {
+                        preset: {
+                            type: Array
+                        },
+                        title: {
+                            type: String
+                        },
+                        level: {
+                            type: String
+                        },
+                        width: {
+                            type: String
+                        }
+                    };
+                }
+
+                constructor() {
+                    super();
+                    _this = this;
+
+                    this.gridOptions = {
+                        defaultColDef: {
+                            suppressMenu: true // 메뉴 막기
+                        },
+                        enableSorting: true,
+                        enableColResize: true,
+                        rowSelection: "single",
+                        overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No records Found</span>',
+                        toolPanelSuppressSideButtons: true,
+                        toolPanelSuppressRowGroups: true,
+                        toolPanelSuppressValues: true,
+                        toolPanelSuppressColumnSelectAll: true,
+                        toolPanelSuppressColumnExpandAll: true,
+                        toolPanelSuppressColumnFilter: true,
+                        toolPanelSuppressPivots: true,
+                        toolPanelSuppressPivotMode: true
+                    };
+
+                    this.columnDefs = [
+                        {headerName: "idx", field: "idx", width: 60},
+                        {headerName: "Title", field: "title", width: 122},
+                        {headerName: "Level", field: "level", width: 120},
+                        {headerName: "Width", field: "width", width: 120}
+                    ];
+
+                    this.gridOptions.onGridReady = (params) => {
+                        params.api.sizeColumnsToFit();
+                        _this.setWWLPreset(testPreset);
+                    }
+
+                    this.gridOptions.onRowSelected = (e) => {
+                        let g_row_selected = e.node;
+                    };
+
+                    // 오른쪽 마우스 : delete
+                    this.gridOptions.getContextMenuItems = (params) => {
+                        let result = [
+                            'separator',
+                            {
+                                name: 'delete',
+                                action: function () {
+                                    _this.deletePreset(params.node.data);
+                                }
+                            },
+                            'separator'
+                        ];
+                        return result;
+                    }
+
+                    // 더블클릭 이벤트
+                    this.gridOptions.onRowDoubleClicked = (event) => {
+                        console.log(event.data);
+                        _this.$.windowDialogWidth.value = event.data.width;
+                        _this.$.windowDialogLevel.value = event.data.level;
+                        _this.$.windowDialogTitle.value = event.data.title;
+                        _this.$.windowDialogIdx.value = event.data.idx;
+                    }
+                }
+
+                ready() {
+                    super.ready();
+                    this.$.testBtn.addEventListener('click', function (e) {
+                        _this.openDialog(e.target);
+                    })
+
+                    this.$.xBtnWWL.addEventListener("click", function () {
+                        _this.doCloseWWL();
+                    });
+
+                    this.$.okBtnWWL.addEventListener("click", function () {
+                        _this.doOkWWL();
+                    });
+
+                    this.$.closeBtnWWL.addEventListener("click", function () {
+                        _this.doCloseWWL();
+                    });
+
+                    this.$.clearBtnWWL.addEventListener("click",function(){
+                        _this.doClearWWL();
+                    });
+
+                    this.$.windowDialogWidth.value = 1234;
+                    this.$.windowDialogLevel.value = 1234;
+                }// ready
+
+                setWWLPreset(list) {
+                    console.log(list);
+                    this.preset = list;
+                    let row = new Array();
+                    for (let i = 0; i < list.length; i++) {
+                        let preset = new Object();
+                        preset.idx = list[i].idx;
+                        preset.title = list[i].title;
+                        preset.level = list[i].level;
+                        preset.width = list[i].width;
+                        row.push(preset);
+                    }
+                    _this.gridOptions.api.setRowData(row);
+                }
+
+                openDialog(targetElement) {
+                    console.log(targetElement);
+                    this.$.WWLDialog.positionTarget = targetElement;
+                    this.$.WWLDialog.open();
+                }
+
+                doOkWWL() {
+                    console.log("okbtn");
+                    let row = new Object();
+                    if(this.$.windowDialogTitle.value){
+                        if(this.$.windowDialogLevel.value && this.$.windowDialogWidth.value){
+                            row.title = this.$.windowDialogTitle.value;
+                            row.level = this.$.windowDialogLevel.value;
+                            row.width = this.$.windowDialogWidth.value;
+                            if(this.$.windowDialogIdx.value){
+                                row.idx = this.$.windowDialogIdx.value;
+                                this.updatePreset(row);
+                            }else{
+                                this.createPreset(row);
+                            }
+                        }
+                    }
+
+                    // _this.doCloseWWL();
+                }
+
+                doCloseWWL() {
+                    this.doClearWWL();
+                    this.$.WWLDialog.close();
+                }
+
+                doClearWWL(){
+                    this.$.windowDialogIdx.value = "";
+                    this.$.windowDialogTitle.value = "";
+                    this.$.windowDialogLevel.value = "";
+                    this.$.windowDialogWidth.value = "";
+                }
+
+                createPreset(row){
+                    console.log("create preset");
+                    console.log(row);
+                }
+
+                updatePreset(row){
+                    console.log("update preset");
+                    console.log(row)
+                }
+
+                deletePreset(row){
+                    console.log("delete preset");
+                    console.log(row);
+                }
+
+            }
+
+            window.customElements.define(HhFilmboxWwlpreset.is, HhFilmboxWwlpreset);
+        })();
+    </script>
 </dom-module>
