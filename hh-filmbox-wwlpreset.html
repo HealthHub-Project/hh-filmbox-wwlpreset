@@ -2,6 +2,8 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../vaadin-icons/vaadin-icons.html">
 <script src="../ag-grid-enterprise/dist/ag-grid-enterprise.js"></script>
 <link rel="import" href="../ag-grid-polymer/ag-grid-polymer.html">
@@ -16,8 +18,8 @@
                 display: block;
                 /*height: 100%;*/
                 /*width: 100%;*/
-                height: 300px;
-                width: 300px;
+                /*height: 300px;*/
+                /*width: 300px;*/
             }
 
             ag-grid-polymer {
@@ -31,32 +33,32 @@
             }
 
             .ag-header {
-            background-color: #2d333f !important;
-            color: #cccccc !important;
-            border-bottom: 3px solid #0087cb !important;
-            font-weight: bold !important;
-            font-size: 12px !important;
+                background-color: #2d333f !important;
+                color: #cccccc !important;
+                border-bottom: 3px solid #0087cb !important;
+                font-weight: bold !important;
+                font-size: 12px !important;
             }
 
             .ag-row {
-            border-bottom: 1px solid #414a59 !important;
+                border-bottom: 1px solid #414a59 !important;
             }
 
             .ag-row-even {
-            background-color: rgba(76, 86, 103, 0.2) !important;
+                background-color: rgba(76, 86, 103, 0.2) !important;
             }
 
             .ag-row-odd {
-            background-color: #2d333f !important;
+                background-color: #2d333f !important;
             }
 
             .ag-row-selected {
-            background-color: #596072 !important;
-            color: #fff !important;
+                background-color: #596072 !important;
+                color: #fff !important;
             }
 
             .ag-cell-focus {
-            border: 1px solid darkgrey !important;
+                border: 1px solid darkgrey !important;
             }
 
             paper-input {
@@ -158,21 +160,21 @@
                 width: 122px;
                 height: 30px;
                 border: 0;
-                font-size: 12pt;
+                font-size: 10pt;
                 color: #ffffff;
                 cursor: pointer;
                 border-radius: 2px;
             }
 
-            .test {
-                height: 100px;
-                width: 100px;
-                background: gold;
-            }
+            /*.test {*/
+            /*height: 100px;*/
+            /*width: 100px;*/
+            /*background: gold;*/
+            /*}*/
         </style>
         <div class="container">
-            <button class="test" id="testBtn">open</button>
-            <paper-dialog id="WWLDialog" class="class-WWLDialog" horizontal-align="left">
+            <!--<button class="test" id="testBtn">open</button>-->
+            <paper-dialog id="WWLDialog" class="class-WWLDialog" horizontal-align="left" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation">
                 <div class="container">
                     <div class="menuItems-title">
                         <p style="margin: 0; padding: 15px; float: left;">WWL Preset</p>
@@ -192,9 +194,11 @@
                             <div class="text-font">Title</div>
                             <paper-input type="String" id="windowDialogTitle" class="class-windowDialog-input"
                                          style="width: 100px;" no-label-float></paper-input>
-                            <!--<div class="text-font" style="margin-left: 50px">Target</div>-->
-                            <!--<paper-input type="number" id="windowDialogLevel" class="class-windowDialog-input"-->
-                            <!--style="width: 100px; color: #aaaaaa;" no-label-float></paper-input>-->
+                            <div class="text-font" style="margin-left: 50px">Modality</div>
+                            <paper-dropdown-menu label="Modality" id="modality" name="modality">
+                                <paper-listbox id="modalityList" slot="dropdown-content">
+                                </paper-listbox>
+                            </paper-dropdown-menu>
                         </div>
                     </div>
                     <div class="class-WWL-list">
@@ -275,9 +279,10 @@
 
                     this.columnDefs = [
                         {headerName: "idx", field: "idx", width: 60},
-                        {headerName: "Title", field: "title", width: 122},
-                        {headerName: "Level", field: "level", width: 120},
-                        {headerName: "Width", field: "width", width: 120}
+                        {headerName: "Title", field: "title", width: 100},
+                        {headerName: "Modality", field: "modality", width: 96},
+                        {headerName: "Level", field: "level", width: 80},
+                        {headerName: "Width", field: "width", width: 80}
                     ];
 
                     this.gridOptions.onGridReady = (params) => {
@@ -316,9 +321,9 @@
 
                 ready() {
                     super.ready();
-                    this.$.testBtn.addEventListener('click', function (e) {
-                        _this.openDialog(e.target);
-                    })
+                    // this.$.testBtn.addEventListener('click', function (e) {
+                    //     _this.openDialog(e.target);
+                    // })
 
                     this.$.xBtnWWL.addEventListener("click", function () {
                         _this.doCloseWWL();
@@ -356,8 +361,9 @@
                 }
 
                 openDialog(targetElement) {
-                    console.log(targetElement);
-                    this.$.WWLDialog.positionTarget = targetElement;
+                    if(targetElement){
+                        this.$.WWLDialog.positionTarget = targetElement;
+                    }
                     this.$.WWLDialog.open();
                 }
 
