@@ -61,18 +61,35 @@
                 border: 1px solid darkgrey !important;
             }
 
-            paper-input {
+            /*paper-input,paper-dropdown-menu{*/
+            paper-input{
                 --paper-input-container-focus-color: #0087cb;
                 --paper-input-container-label-color: #aaaaaa;
                 --paper-input-container-input-text-align: center;
                 --paper-input-container-input-color: #aaaaaa;
 
-                /*width: 150px;*/
+                width: 100px;
+                color: #aaaaaa;
+                background: #2d333f;
+                text-align: center;
+            }
+
+            paper-dropdown-menu, paper-listbox {
+                --paper-input-container-focus-color: #0087cb;
+                --paper-input-container-label: {
+                    color: #aaaaaa;
+                };
+                --paper-input-container-input: {
+                    text-align: center;
+                    color: #aaaaaa;
+                };
+
+                width: 110px;
                 color: #aaaaaa;
                 background: #2d333f;
             }
 
-            paper-item {
+            paper-item{
                 --paper-item-min-height: 30px;
                 --paper-item-focused-color: #0087cb;
                 color: #aaaaaa;
@@ -184,19 +201,19 @@
                         <div class="wrap">
                             <input id="windowDialogIdx" style="display: none">
                             <div class="text-font">Window Level</div>
-                            <paper-input type="number" id="windowDialogWidth" class="class-windowDialog-input"
+                            <paper-input type="number" id="windowDialogLevel" class="class-windowDialog-input"
                                          style="width: 100px;" no-label-float></paper-input>
                             <div class="text-font" style="margin-left: 50px">Window Width</div>
-                            <paper-input type="number" id="windowDialogLevel" class="class-windowDialog-input"
+                            <paper-input type="number" id="windowDialogWidth" class="class-windowDialog-input"
                                          style="width: 100px; color: #aaaaaa;" no-label-float></paper-input>
                         </div>
                         <div class="wrap">
                             <div class="text-font">Title</div>
                             <paper-input type="String" id="windowDialogTitle" class="class-windowDialog-input"
-                                         style="width: 100px;" no-label-float></paper-input>
+                                         maxlength="7" style="width: 100px;" no-label-float></paper-input>
                             <div class="text-font" style="margin-left: 50px">Modality</div>
-                            <paper-dropdown-menu label="Modality" id="modality" name="modality">
-                                <paper-listbox id="modalityList" slot="dropdown-content">
+                            <paper-dropdown-menu label="Modality" id="modality" noLabelFloat>
+                                <paper-listbox id="modalityList" slot="dropdown-content" style="padding: 0px;">
                                 </paper-listbox>
                             </paper-dropdown-menu>
                         </div>
@@ -225,14 +242,6 @@
     <script>
         (function () {
             let _this;
-            let testPreset = [
-                {idx: "0", title: "test111", level: "1111", width: "1111"},
-                {idx: "1", title: "test222", level: "2222", width: "2222"},
-                {idx: "2", title: "test333", level: "3333", width: "3333"},
-                {idx: "3", title: "test444", level: "4444", width: "4444"},
-                {idx: "4", title: "test555", level: "5555", width: "5555"}
-            ]
-
             class HhFilmboxWwlpreset extends Polymer.Element {
                 static get is() {
                     return 'hh-filmbox-wwlpreset';
@@ -240,6 +249,9 @@
 
                 static get properties() {
                     return {
+                        curModality:{
+                            type:String
+                        },
                         preset: {
                             type: Array
                         },
@@ -279,15 +291,14 @@
 
                     this.columnDefs = [
                         {headerName: "idx", field: "idx", width: 60},
-                        {headerName: "Title", field: "title", width: 100},
-                        {headerName: "Modality", field: "modality", width: 96},
+                        {headerName: "Title", field: "title", width: 119},
+                        {headerName: "Modality", field: "modality", width: 90},
                         {headerName: "Level", field: "level", width: 80},
                         {headerName: "Width", field: "width", width: 80}
                     ];
 
                     this.gridOptions.onGridReady = (params) => {
                         params.api.sizeColumnsToFit();
-                        _this.setWWLPreset(testPreset);
                     }
 
                     this.gridOptions.onRowSelected = (e) => {
@@ -311,7 +322,6 @@
 
                     // 더블클릭 이벤트
                     this.gridOptions.onRowDoubleClicked = (event) => {
-                        console.log(event.data);
                         _this.$.windowDialogWidth.value = event.data.width;
                         _this.$.windowDialogLevel.value = event.data.level;
                         _this.$.windowDialogTitle.value = event.data.title;
@@ -321,9 +331,9 @@
 
                 ready() {
                     super.ready();
-                    // this.$.testBtn.addEventListener('click', function (e) {
-                    //     _this.openDialog(e.target);
-                    // })
+                    if(this.curModality){
+                        this.$.modality.value = this.curModality;
+                    }
 
                     this.$.xBtnWWL.addEventListener("click", function () {
                         _this.doCloseWWL();
@@ -331,6 +341,7 @@
 
                     this.$.okBtnWWL.addEventListener("click", function () {
                         _this.doOkWWL();
+                        _this.doCloseWWL();
                     });
 
                     this.$.closeBtnWWL.addEventListener("click", function () {
@@ -343,16 +354,19 @@
 
                     this.$.windowDialogWidth.value = 1234;
                     this.$.windowDialogLevel.value = 1234;
+
+                    this.getPreset();
                 }// ready
 
                 setWWLPreset(list) {
-                    console.log(list);
+                    // console.log(list);
                     this.preset = list;
                     let row = new Array();
                     for (let i = 0; i < list.length; i++) {
                         let preset = new Object();
                         preset.idx = list[i].idx;
                         preset.title = list[i].title;
+                        preset.modality = list[i].modality;
                         preset.level = list[i].level;
                         preset.width = list[i].width;
                         row.push(preset);
@@ -368,23 +382,24 @@
                 }
 
                 doOkWWL() {
-                    console.log("okbtn");
+                    // console.log("okbtn");
                     let row = new Object();
                     if(this.$.windowDialogTitle.value){
                         if(this.$.windowDialogLevel.value && this.$.windowDialogWidth.value){
                             row.title = this.$.windowDialogTitle.value;
                             row.level = this.$.windowDialogLevel.value;
                             row.width = this.$.windowDialogWidth.value;
+                            row.modality = this.$.modality.value;
                             if(this.$.windowDialogIdx.value){
                                 row.idx = this.$.windowDialogIdx.value;
                                 this.updatePreset(row);
+                                this.doClearWWL();
                             }else{
                                 this.createPreset(row);
+                                this.doClearWWL();
                             }
                         }
                     }
-
-                    // _this.doCloseWWL();
                 }
 
                 doCloseWWL() {
@@ -399,21 +414,55 @@
                     this.$.windowDialogWidth.value = "";
                 }
 
+                setLevel(param){
+                    this.getPreset();
+                    _this.$.windowDialogWidth.value = param.width;
+                    _this.$.windowDialogLevel.value = param.level;
+                }
+
                 createPreset(row){
-                    console.log("create preset");
-                    console.log(row);
+                    // console.log("create preset");
+                    let params = new Object();
+                    let detail = new Object();
+                    detail.wwlPreset = row;
+                    params.detail = detail;
+                    this.dispatchEvent(new CustomEvent('createWWLPreset', params));
                 }
 
                 updatePreset(row){
-                    console.log("update preset");
-                    console.log(row)
+                    // console.log("update preset");
+                    let params = new Object();
+                    let detail = new Object();
+                    detail.wwlPreset = row;
+                    params.detail = detail;
+                    this.dispatchEvent(new CustomEvent('updateWWLPreset', params));
                 }
 
                 deletePreset(row){
-                    console.log("delete preset");
-                    console.log(row);
+                    // console.log("delete preset");
+                    let params = new Object();
+                    let detail = new Object();
+                    detail.wwlPreset = row;
+                    params.detail = detail;
+                    this.dispatchEvent(new CustomEvent('deleteWWLPreset', params));
                 }
 
+                getPreset(row){
+                    this.dispatchEvent(new CustomEvent('getWWLPreset'));
+                }
+
+                setModality(list) {
+                    let modality = list;
+                    let sel = this.$.modalityList;
+                    if (sel.childElementCount === 0) {
+                        for (let i in modality) {
+                            let opt = document.createElement('option');
+                            opt.innerHTML = modality[i];
+                            opt.value = modality[i];
+                            sel.appendChild(opt);
+                        }
+                    }
+                }
             }
 
             window.customElements.define(HhFilmboxWwlpreset.is, HhFilmboxWwlpreset);
