@@ -360,18 +360,23 @@
 
                 setWWLPreset(list) {
                     // console.log(list);
-                    this.preset = list;
-                    let row = new Array();
-                    for (let i = 0; i < list.length; i++) {
-                        let preset = new Object();
-                        preset.idx = list[i].idx;
-                        preset.title = list[i].title;
-                        preset.modality = list[i].modality;
-                        preset.level = list[i].level;
-                        preset.width = list[i].width;
-                        row.push(preset);
+                    if(list){
+                        this.preset = list;
+                        let row = new Array();
+                        for (let i = 0; i < list.length; i++) {
+                            let preset = new Object();
+                            preset.idx = list[i].idx;
+                            preset.title = list[i].title;
+                            preset.modality = list[i].modality;
+                            preset.level = list[i].level;
+                            preset.width = list[i].width;
+                            row.push(preset);
+                        }
+                        _this.gridOptions.api.setRowData(row);
+                    }else{
+                        _this.gridOptions.api.setRowData(null);
                     }
-                    _this.gridOptions.api.setRowData(row);
+
                 }
 
                 openDialog(targetElement) {
