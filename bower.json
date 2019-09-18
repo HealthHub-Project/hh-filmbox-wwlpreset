@@ -1,6 +1,7 @@
 {
   "name": "hh-filmbox-wwlpreset",
   "main": "hh-filmbox-wwlpreset.html",
+  "version":"1.0.0",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#2.1.1",
