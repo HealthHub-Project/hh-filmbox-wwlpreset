@@ -268,6 +268,9 @@
                         },
                         width: {
                             type: String
+                        },
+                        modalityList:{
+                            type:Array
                         }
                     };
                 }
@@ -275,6 +278,7 @@
                 constructor() {
                     super();
                     _this = this;
+                    this.getModality();
 
                     this.gridOptions = {
                         defaultColDef: {
@@ -305,6 +309,7 @@
 
                     this.gridOptions.onGridReady = (params) => {
                         params.api.sizeColumnsToFit();
+
                     }
 
                     this.gridOptions.onRowSelected = (e) => {
@@ -328,7 +333,6 @@
 
                     // 더블클릭 이벤트
                     this.gridOptions.onRowDoubleClicked = (event) => {
-                        console.log(event.data);
                         _this.$.windowDialogWidth.value = event.data.width;
                         _this.$.windowDialogLevel.value = event.data.level;
                         _this.$.windowDialogTitle.value = event.data.title;
@@ -343,16 +347,11 @@
 
                 ready() {
                     super.ready();
-
                     this.$.windowDialogLevel.noLabelFloat = true;
                     this.$.windowDialogWidth.noLabelFloat = true;
                     this.$.windowDialogTitle.noLabelFloat = true;
                     this.$.key.noLabelFloat = true;
                     this.$.modality.noLabelFloat = true;
-
-                    if(this.curModality){
-                        this.$.modality.value = this.curModality;
-                    }
 
                     this.$.key.addEventListener("value-changed",function (e) {
                         if(!(parseInt(e.detail.value) < 10 && parseInt(e.detail.value) > 0)){
@@ -384,6 +383,10 @@
                 }// ready
 
                 setWWLPreset(userWWLPreset) {
+                    this.setModality(this.modalityList);
+                    this.curModality = window.struct.request.modality[0];
+                    this.$.modality.value = this.curModality;
+
                     if(userWWLPreset){
                         this.preset = userWWLPreset.preset;
                         let row = new Array();
@@ -453,8 +456,8 @@
 
                 setLevel(param){
                     // this.getPreset();
-                    _this.$.windowDialogWidth.value = param.width;
-                    _this.$.windowDialogLevel.value = param.level;
+                    this.$.windowDialogWidth.value = param.width;
+                    this.$.windowDialogLevel.value = param.level;
                 }
 
                 createPreset(row){
@@ -483,9 +486,9 @@
                     this.dispatchEvent(new CustomEvent('deleteWWLPreset', params));
                 }
 
-                // getPreset(){
-                // this.dispatchEvent(new CustomEvent('getWWLPreset'));
-                // }
+                getModality(){
+                    this.dispatchEvent(new CustomEvent('getModalityWWLPreset'));
+                }
 
                 setModality(list) {
                     let modality = list;
