@@ -376,10 +376,9 @@
                         _this.doClearWWL();
                     });
 
-                    // this.$.windowDialogWidth.value = 1234;
-                    // this.$.windowDialogLevel.value = 1234;
-
-                    // this.getPreset();
+                    this.$.WWLDialog.addEventListener("keydown", e => {
+                        e.stopPropagation();
+                    });
                 }// ready
 
                 setWWLPreset(userWWLPreset) {
@@ -388,17 +387,16 @@
                     this.$.modality.value = this.curModality;
 
                     if(userWWLPreset){
-                        this.preset = userWWLPreset.preset;
                         let row = new Array();
-                        for (let i = 0; i < this.preset.length; i++) {
-                            let preset = new Object();
-                            preset.idx = this.preset[i].idx;
-                            preset.title = this.preset[i].title;
-                            preset.modality = this.preset[i].modality;
-                            preset.level = this.preset[i].level;
-                            preset.width = this.preset[i].width;
-                            if(this.preset[i].key) {
-                                preset.key = "Alt+" + this.preset[i].key;
+                        for (let i = 0; i < userWWLPreset.length; i++) {
+                            let preset = {};
+                            preset.idx = i+1;
+                            preset.title = userWWLPreset[i].title;
+                            preset.modality = userWWLPreset[i].modality;
+                            preset.level = userWWLPreset[i].level;
+                            preset.width = userWWLPreset[i].width;
+                            if(userWWLPreset[i].key) {
+                                preset.key = "Alt+" + userWWLPreset[i].key;
                             }
                             row.push(preset);
                         }
