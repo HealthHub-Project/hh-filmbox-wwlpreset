@@ -386,7 +386,7 @@
                     this.curModality = window.struct.request.modality[0];
                     this.$.modality.value = this.curModality;
 
-                    if(userWWLPreset){
+                    if(userWWLPreset && userWWLPreset.length > 0){
                         let row = new Array();
                         for (let i = 0; i < userWWLPreset.length; i++) {
                             let preset = {};
