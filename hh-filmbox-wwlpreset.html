@@ -183,6 +183,24 @@
                 border-radius: 2px;
             }
 
+            .ag-theme-balham-dark .ag-row-drag1 {
+                background-image: url("resource/unsorted.png");
+                background-color: transparent;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 16px 16px;
+                height: 16px;
+                opacity: 0.87;
+                width: 16px;
+                background-position-x: left;
+                background-position-y: 4px;
+                float: left;
+                height: 100%;
+                width: 28px;
+                background-position-y: center;
+                color: #ffffff;
+            }
+
             /*.test {*/
             /*height: 100px;*/
             /*width: 100px;*/
@@ -284,6 +302,9 @@
                         defaultColDef: {
                             suppressMenu: true // 메뉴 막기
                         },
+                        rowDragManaged: true,
+                        columnDefs: this.createColumnDefs(),
+                        animateRows: true,
                         enableSorting: true,
                         enableColResize: true,
                         rowSelection: "single",
@@ -298,14 +319,14 @@
                         toolPanelSuppressPivotMode: true
                     };
 
-                    this.columnDefs = [
-                        {headerName: "idx", field: "idx", width: 60},
-                        {headerName: "Title", field: "title", width: 90},
-                        {headerName: "Modality", field: "modality", width: 95},
-                        {headerName: "Level", field: "level", width: 80},
-                        {headerName: "Width", field: "width", width: 80},
-                        {headerName: "Shortcut", field: "key", width: 95},
-                    ];
+                    // this.columnDefs = [
+                    //     {headerName: "idx", field: "idx", width: 60},
+                    //     {headerName: "Title", field: "title", width: 90},
+                    //     {headerName: "Modality", field: "modality", width: 95},
+                    //     {headerName: "Level", field: "level", width: 80},
+                    //     {headerName: "Width", field: "width", width: 80},
+                    //     {headerName: "Shortcut", field: "key", width: 95},
+                    // ];
 
                     this.gridOptions.onGridReady = (params) => {
                         params.api.sizeColumnsToFit();
@@ -380,6 +401,30 @@
                         e.stopPropagation();
                     });
                 }// ready
+
+                createColumnDefs() {
+                    return [
+                        {
+                            headerName: "idx",
+                            field: "idx",
+                            width: 60,
+                            rowDrag: true,
+                            cellRenderer: function deltaIndicator (param) {
+                                const span = param.eGridCell.querySelector("span .ag-row-drag");
+                                span.classList.remove('ag-row-drag');
+                                span.classList.add('ag-row-drag1');
+                                return param.value;
+                            },
+                            suppressSorting: true
+                        },
+                        {headerName: "Title", field: "title", width: 90},
+                        {headerName: "Modality", field: "modality", width: 95},
+                        {headerName: "Level", field: "level", width: 80},
+                        {headerName: "Width", field: "width", width: 80},
+                        {headerName: "Shortcut", field: "key", width: 95},
+
+                    ];
+                }
 
                 setWWLPreset(userWWLPreset) {
                     this.setModality(this.modalityList);
