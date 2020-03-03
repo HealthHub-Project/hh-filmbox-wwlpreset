@@ -350,7 +350,7 @@
                             'separator'
                         ];
                         return result;
-                    }
+                    };
 
                     // 더블클릭 이벤트
                     this.gridOptions.onRowDoubleClicked = (event) => {
@@ -363,7 +363,16 @@
                             var key = tempKey.split("+");
                             _this.$.key.value = key[1];
                         }
-                    }
+                    };
+
+                    this.gridOptions.onRowDragEnd = (e) => {
+                        let row = {old : e.node.data, new : e.node.rowIndex + 1};
+
+                        if(row.old.idx === row.new) return;
+
+                        let param = {detail : row};
+                        this.dispatchEvent(new CustomEvent('dragWWLPreset', param));
+                    };
                 }
 
                 ready() {
